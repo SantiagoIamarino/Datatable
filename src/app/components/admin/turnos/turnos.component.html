@@ -1,0 +1,361 @@
+<div class="table100 table-responsive">
+    <table class='turnos-table mb-4'>
+        <thead>
+            <tr class="table100-head">
+                <th (click)='sortBy($event)'
+                    class="column">Empleado
+                    <i class="fa fa-angle-down"></i>
+                </th>
+                <th (click)='sortBy($event)'
+                    class="column">Fecha
+                    <i class="fa fa-angle-down"></i>
+                </th>
+                <th (click)='sortBy($event)'
+                    class="column">Guardia
+                    <i class="fa fa-angle-down"></i>
+                </th>
+                <th (click)='sortBy($event)'
+                    class="column">Hora ingreso
+                    <i class="fa fa-angle-down"></i>
+                </th>
+                <th (click)='sortBy($event)'
+                    class="column">Prox. ronda
+                    <i class="fa fa-angle-down"></i>
+                </th>
+                <th (click)='sortBy($event)'
+                    class="column">Prox. alerta
+                    <i class="fa fa-angle-down"></i>
+                </th>
+                <th (click)='sortBy($event)'
+                    class="column">Incidentes
+                    <i class="fa fa-angle-down fa-rotate-180"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody *ngIf='!loading'>
+                <tr *ngFor='let turno of turnos'
+                    (click)='openModal(turno)'>
+                    <td class="column1">{{ turno.datos_turno.empleado }}</td>
+                    <td class="column2">{{ turno.datos_turno.fecha }}</td>
+                    <td class="column3">{{ turno.datos_turno.horario }}</td>
+                    <td class="column4">{{ turno.datos_turno.entrada }}</td>
+                    <td [ngClass]="{'danger': verifyDate(turno.registros.ronda_proxima)}"
+                        class="column5">{{ turno.registros.ronda_proxima }}</td>
+                    <td [ngClass]="{'danger': verifyDate(turno.registros.alerta_proxima)}"
+                        class="column6">{{ turno.registros.alerta_proxima }}</td>
+                    <td class="column6">{{ turno.registros.incidentes }}</td>
+                </tr>
+        </tbody>
+    </table>
+
+    <div class="loading" *ngIf='loading'>
+        <i class="fa fa-spinner fa-3x fa-spin" aria-hidden="true"></i>
+    </div>
+</div>
+
+
+<div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="moreInfoModalLabel" *ngIf='turnoToShow'>
+              {{ turnoToShow.datos_turno.empleado }}
+            </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf='turnoToShow'>
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        #Titulo general
+                      </button>
+                    </h2>
+                  </div>
+              
+                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                          <div class="group d-flex justify-content-between">
+                            <li class='w-50'><strong>Fecha:</strong>  {{ (turnoToShow.datos_turno.fecha) ? turnoToShow.datos_turno.fecha : 's/n'  }}</li>
+                            <li class='w-50'><strong>ID:</strong>  {{ (turnoToShow.datos_turno.id_turno) ? turnoToShow.datos_turno.id_turno : 's/n'  }}</li>
+                          </div>
+                          <div class="group d-flex justify-content-between">
+                            <li class='w-50'><strong>Empleado:</strong>  {{ (turnoToShow.datos_turno.empleado) ? turnoToShow.datos_turno.empleado : 's/n'  }}</li>
+                            <li class='w-50'><strong>Cedula:</strong>  {{ (turnoToShow.datos_turno.cedula) ? turnoToShow.datos_turno.cedula : 's/n' }}</li>
+                          </div>
+                          <div class="form-group">
+                              <textarea class='form-control mt-4 w-100' placeholder="Comentarios" 
+                                cols="30" rows="10"></textarea>
+                          </div>
+                          <div class="group d-flex justify-content-between">
+                            <li class='w-50'><strong>Rondas desde:</strong>  {{ (turnoToShow.registros.ronda_desde ) ? turnoToShow.registros.ronda_desde : 's/n' }}</li>
+                            <li class='w-50'><strong>Alertas desde:</strong>  {{ (turnoToShow.registros.alerta_desde) ? turnoToShow.registros.alerta_desde: 's/n'  }}</li>
+                          </div>
+                          <div class="group d-flex justify-content-between">
+                            <li class='w-50'><strong>Rondas cada:</strong>  {{ (turnoToShow.registros.ronda_cada) ? turnoToShow.registros.ronda_cada: 's/n'  }}</li>
+                            <li class='w-50'><strong>Alertas cada:</strong>  {{ (turnoToShow.registros.alerta_cada) ? turnoToShow.registros.alerta_cada: 's/n'  }}</li>
+                          </div>
+                          <div class="group d-flex justify-content-between">
+                            <li class='w-50'><strong>Rondas hasta:</strong>  {{ (turnoToShow.registros.ronda_hasta) ? turnoToShow.registros.ronda_hasta: 's/n'  }}</li>
+                            <li class='w-50'><strong>Alertas hasta:</strong>  {{ (turnoToShow.registros.alerta_hasta) ? turnoToShow.registros.alerta_hasta: 's/n' }}</li>
+                          </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingTwo">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        #Horarios de marcas
+                      </button>
+                    </h2>
+                  </div>
+                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                        <div class="group d-flex justify-content-between">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Entrada</th>
+                                <th scope="col">Pausa</th>
+                                <th scope="col">Regreso</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{{ turnoToShow.datos_turno.entrada }}</td>
+                                <td>{{ turnoToShow.datos_turno.pausa }}</td>
+                                <td>{{ turnoToShow.datos_turno.regreso }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="form-group">
+                            <textarea class='form-control mt-4 w-100' placeholder="Comentarios" 
+                              cols="30" rows="10"></textarea>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingThree">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        #Detalle rondas
+                      </button>
+                    </h2>
+                  </div>
+                  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                        <div class="group d-flex justify-content-between">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Id ronda</th>
+                                <th scope="col">Hora plan</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Hora marca</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor='let ronda of getArrayFromObject(turnoToShow.rondas_activas)'>
+                                <td>{{ ronda.ronda_id }}</td>
+                                <td>{{ ronda.ronda_proxima }}</td>
+                                <td>{{ ronda.ronda_estado }}</td>
+                                <td>{{ ronda.ronda_marca }}</td>
+                              </tr>
+                              <div class="no-rondas" *ngIf='!turnoToShow.rondas_activas'>
+                                <p class='pt-2 pl-1'>No hay rondas activas por el momento</p>
+                              </div>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="form-group">
+                            <textarea class='form-control mt-4 w-100' placeholder="Comentarios" 
+                              cols="30" rows="10"></textarea>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingFour">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        #Puntos rondas
+                      </button>
+                    </h2>
+                  </div>
+                  <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                        <div class="group d-flex justify-content-between">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Id ronda</th>
+                                <th scope="col">Punto 1</th>
+                                <th scope="col">Punto 2</th>
+                                <th scope="col">Punto 3</th>
+                                <th scope="col">Punto 4</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor='let ronda of getArrayFromObject(turnoToShow.rondas_activas)'>
+                                <td>{{ ronda.ronda_id }}</td>
+                                <td>{{ ronda.punto_1 }}</td>
+                                <td>{{ ronda.punto_2 }}</td>
+                                <td>{{ ronda.punto_3 }}</td>
+                                <td>{{ ronda.punto_4 }}</td>
+                              </tr>
+                              <div class="no-rondas" *ngIf='!turnoToShow.rondas_activas'>
+                                <p class='pt-2 pl-1'>No hay rondas activas por el momento</p>
+                              </div>
+                            </tbody>
+                          </table>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingFive">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        #Detalle alertas
+                      </button>
+                    </h2>
+                  </div>
+                  <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                        <div class="group d-flex justify-content-between">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Id alerta</th>
+                                <th scope="col">Hora plan</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Hora marca</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor='let alerta of getArrayFromObject(turnoToShow.alertas_activas)'>
+                                <td>{{ alerta.alerta_id }}</td>
+                                <td>{{ alerta.alerta_proxima }}</td>
+                                <td>{{ alerta.alerta_estado }}</td>
+                                <td>{{ alerta.alerta_marca }}</td>
+                              </tr>
+                              <div class="no-rondas" *ngIf='!turnoToShow.rondas_activas'>
+                                <p class='pt-2 pl-1'>No hay alertas activas por el momento</p>
+                              </div>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="form-group">
+                            <textarea class='form-control mt-4 w-100' placeholder="Comentarios" 
+                              cols="30" rows="10"></textarea>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingSix">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                        #Detalle incidentes
+                      </button>
+                    </h2>
+                  </div>
+                  <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                        <div class="group d-flex justify-content-between">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Hora plan</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Hora marca</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor='let ronda of getArrayFromObject(turnoToShow.rondas_activas)'>
+                                <td>{{ ronda.ronda_id }}</td>
+                                <td>{{ ronda.ronda_proxima }}</td>
+                                <td>{{ ronda.ronda_estado }}</td>
+                                <td>{{ ronda.ronda_marca }}</td>
+                              </tr>
+                              <div class="no-rondas" *ngIf='!turnoToShow.rondas_activas'>
+                                <p class='pt-2 pl-1'>No hay rondas activas por el momento</p>
+                              </div>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="form-group">
+                            <textarea class='form-control mt-4 w-100' placeholder="Comentarios" 
+                              cols="30" rows="10"></textarea>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingSeven">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                        #Acciones
+                      </button>
+                    </h2>
+                  </div>
+                  <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul>
+                        <div class="group d-flex justify-content-between">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Accion 1</th>
+                                <th scope="col">Accion 2</th>
+                                <th scope="col">Accion 3</th>
+                                <th scope="col">Accion 4</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                              </tr>
+                              <tr>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                                <td><button class='btn btn-primary'>Botón</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
