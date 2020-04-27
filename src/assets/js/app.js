@@ -1,3 +1,12 @@
+
+$(document).ready(() => {
+    $('#close_sidebar_btn').on('click', () => {
+        $('.sidebar').animate({
+            'right': '-650px'
+        }, 500)
+    })
+})
+
 // Load admin scripts and destroy
 
 function loadScript() {
@@ -49,6 +58,8 @@ function sortTable(element) {
     }
 }
 
-function showMoreInfoModal() {
-    $('#moreInfoModal').modal('show');
+function showMoreInfoSidebar() {
+    $('.sidebar').animate({
+        'right': '0'
+    }, 500)
 }

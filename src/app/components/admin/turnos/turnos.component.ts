@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵConsole } from '@angular/core';
 import { TurnosService } from '../../../services/turnos.service';
 
 
-declare function sortTable(element);
-
-declare function   showMoreInfoModal();
+declare function showMoreInfoSidebar();
 
 @Component({
   selector: 'app-turnos',
@@ -23,6 +21,10 @@ export class TurnosComponent implements OnInit {
     private turnosService: TurnosService
   ) {
     this.getTurnos();
+    setInterval(() => {
+      console.log('busca');
+      this.getTurnos();
+    }, 30000);
    }
 
   ngOnInit() {
@@ -40,7 +42,6 @@ export class TurnosComponent implements OnInit {
     // sortTable(event.target);
     // this.turnosService.getTurnosOrderedBy('turno.datos_turno.empleado' )
     //   .subscribe((res) => {
-    //     console.log(res);
     //   })
   }
 
@@ -73,9 +74,7 @@ export class TurnosComponent implements OnInit {
 
   openModal(turno) {
     this.turnoToShow = turno;
-    console.log(turno);
-
-    showMoreInfoModal();
+    showMoreInfoSidebar();
   }
 
   getArrayFromObject(object): any {

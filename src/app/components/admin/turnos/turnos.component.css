@@ -115,6 +115,10 @@
     width: 100%;
     margin: 0 auto;
   }
+
+  .table100{
+    position: relative;
+  }
   
   .container-table100 {
     width: 100%;
@@ -228,6 +232,11 @@
     border-bottom: 1px solid #cdcdcd;
   }
 
+  thead.fixed {
+    position:fixed;
+    top:6vh;
+  }
+
   .loading{
     background: #f1f4f6;
     width: 100%;
@@ -238,8 +247,35 @@
     color:#563d7c;
   }
 
-  #moreInfoModal textarea{
+  .sidebar{
+    position: fixed;
+    top: 6.2vh;
+    right: 0;
+    width: 100vw;
+    height: 93.8vh;
+    max-width: 600px;
+    background: white;
+    display: flex;
+    align-items: center;
+    right: -650px;
+  }
+
+  .sidebar .accordion{
+    width: 100%;
+  }
+
+  .sidebar textarea{
     height: 15vh !important;
+  }
+
+  .sidebar .close-btn{
+    position: fixed;
+    left: -15px;
+    padding: 3px 10px;
+    background: #563d7c;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
   }
   
   
